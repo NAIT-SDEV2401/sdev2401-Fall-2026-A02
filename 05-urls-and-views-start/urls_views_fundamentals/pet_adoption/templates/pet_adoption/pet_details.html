@@ -8,10 +8,17 @@
   </head>
   <body>
     <div class="max-w-2xl mx-auto">
+      {% if pet_data %}
         <h1 class="text-3xl font-bold underline">
-          Welcome to the Pet Adoption Matcher!
+          Is a {{ pet_type }} the right match for you?
         </h1>
-        <p class="text-lg mb-2">Find your perfect pet match today!</p>
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">Pet Details</h2>
+          <p class="text-lg mb-2">
+              The traits of a {{pet_type}} are: {{pet_data.traits}}
+          </p>
+        </section>
+      {% endif %}
     </div>
   </body>
 </html>
