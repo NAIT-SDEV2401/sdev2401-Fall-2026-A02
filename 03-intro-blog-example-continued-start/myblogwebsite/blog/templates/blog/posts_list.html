@@ -11,6 +11,22 @@
         <h1 class="text-3xl font-bold underline">
             Hello, I'm using a backend framework!
         </h1>
+
+        <div class="bg-white shadow rounded-xl p-4 mb-4">
+            <p class="text-lg mb-2">Just finished building my portfolio site!</p>
+            <span class="text-sm text-gray-500">Spe 16, 2025</span>
+        </div>
+
+        {% for post in posts %}
+
+          <div class="bg-white shadow rounded-xl p-4 mb-4">
+              <a href="{% url 'post_detail' post.pk %}"> 
+                <p class="text-lg mb-2">{{ post.title }}</p>
+              </a>
+              <span class="text-sm text-gray-500">{{ post.created_date }}</span>
+            </div>
+
+        {% endfor %}
     </div>
   </body>
 </html>
