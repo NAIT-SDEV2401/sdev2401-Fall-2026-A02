@@ -14,6 +14,11 @@
                     <div>
                         {{company.email}}
                     </div>
+                    <div>
+                        {{company.description}}
+                    </div>
+                    <p>Created at: {{ company.created_at }}</p>
+                    <p>Information Last updated: {{ company.updated_at }}</p>
                 </li>
             {% endfor %}
             </ul>
