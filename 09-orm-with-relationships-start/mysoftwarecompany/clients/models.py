@@ -14,8 +14,6 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
-# ... company model above ...
-
 class Employee(models.Model):
     # core fields
     first_name = models.CharField(max_length=50)
@@ -26,10 +24,11 @@ class Employee(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Automatically set the field to now when the object is first created
     updated_at = models.DateTimeField(auto_now=True)
 
-    # Foreign key relationship to the Company model
+    # region Foreign key relationship to the Company model
     # This creates a many-to-one relationship where each employee belongs to one company
     # the models.CASCADE means that if the company is deleted, all related employees will also be deleted.
     # the related_name allows you to access the employees from the company instance using company.employees.all()
+    # endregion
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='employees')
 
     def __str__(self):
