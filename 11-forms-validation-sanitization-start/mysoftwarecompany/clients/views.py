@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.shortcuts import render
 # get the special function to fetch an object or return a 404 error
 from django.shortcuts import get_object_or_404
-
+from django.core.mail import send_mail
 from .models import Company, Employee
 from .forms import ContactForm
 
@@ -43,3 +43,31 @@ def contact_us(request):
     if request.method == "GET":
         form = ContactForm()
         return render(request, "clients/contact_us.html", {"form": form})
+    elif request.method == "POST":
+        form = ContactForm(request.POST)
+        # if the form is valid then process the data.
+        if form.is_valid():
+            # Process the cleaned data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+
+            # Send an email to some_admin_account@test.com in the next step.
+            send_mail(
+                subject=f"New contact us message from {name}",
+                message=message,
+                from_email=email,
+                recipient_list=["some_admin_account@test.com"],
+            )
+            # in the future we can redirect to a thank you page.
+            return render(request,
+                "clients/contact_us.html",
+                {"form": ContactForm(), "success": True}
+            )
+        else:
+            # this is going to rerender the form with error messages
+            # as it's not quite valid here.
+            return render(request,
+                "clients/contact_us.html",
+                {"form": form}
+            )
