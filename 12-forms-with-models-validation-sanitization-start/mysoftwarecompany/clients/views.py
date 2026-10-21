@@ -1,23 +1,17 @@
 from django.db.models import Q
 from django.shortcuts import render
 from django.core.mail import send_mail
-
-# get the specical function to fetch an object or return a 404 error
 from django.shortcuts import get_object_or_404
 
-# Create your views here.
 from .models import Company, Employee
-from .forms import ContactForm
+from .forms import ContactForm, CompanyForm
 
 # Create the contact form here.
 def contact_us(request):
     # this handles get request and displays the form to the user.
     if request.method == "GET":
         form = ContactForm()
-        return render(request,
-            "clients/contact_us.html",
-            {"form": form}
-        )
+        return render(request, "clients/contact_us.html", {"form": form})
     # form submission will be handled in future steps.
     elif request.method == "POST":
         form = ContactForm(request.POST)
@@ -44,12 +38,10 @@ def contact_us(request):
                 "clients/contact_us.html",
                 {"form": form}
             )
-
 def list_companies(request):
     # fetching data from the database and passing it to the template
     companies = Company.objects.all()
     return render(request, 'clients/companies_list.html', {'companies': companies})
-
 def company_detail(request, company_id):
     # fetching a specific company by its ID or returning a 404 error if not found
     # note: we haven't discussed this but every single model in django
@@ -57,8 +49,6 @@ def company_detail(request, company_id):
     company = get_object_or_404(Company, id=company_id)
 
     return render(request, 'clients/company_detail.html', {'company': company})
-
-
 def employees_search_results(request, company_id):
     # this is going to handle the search query for employees
     query = request.GET.get('q', '')
@@ -79,3 +69,7 @@ def employees_search_results(request, company_id):
     # return
     return render(request, 'clients/employees_search_results.html',
                   {'employees': employees, 'query': query, 'company': company})
+
+def create_company(request):
+    form = CompanyForm()
+    return render(request, 'clients/create_company.html', {"form":form})
