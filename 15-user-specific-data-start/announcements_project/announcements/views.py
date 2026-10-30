@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 # import login_required decorator
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
 from .models import Announcement
@@ -15,6 +15,11 @@ def announcement_list(request):
         {'announcements': announcements}
     )
 
+def is_teacher(user):
+    return user.role == 'teacher'
+
+@login_required
+@user_passes_test(is_teacher, login_url='login')
 def create_announcement(request):
     if request.method == 'POST':
         form = AnnouncementForm(request.POST)
