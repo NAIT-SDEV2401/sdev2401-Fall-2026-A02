@@ -77,11 +77,12 @@ Serializers in DRF do two things:
 
 Let's create serializers for our `Exercise` model explicitly.
 
+Create the file `workouts_app/serializers.py`:
+
 ```python
 from rest_framework import serializers
 
-from .models import Exercise, Workout
-
+from .models import Exercise
 
 class ExerciseSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -100,18 +101,22 @@ Let's talk about what's going on here.
 
 We need the view logic to handle `GET` requests to list all of the exercises in our database. We can use the `ExerciseSerializer` to serialize the data and return it as a JSON response.
 
-```python
+Enter the following into `views.py`:
 
-from rest_framework import APIView
+```python
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from .serializers import ExerciseSerializer
 from .models import Exercise
 
-
 class ExerciseAPIView(APIView):
+    permission_classes = [AllowAny]
+    
     def get(self, request):
         exercises = Exercise.objects.all()
+        # DRF recommends getting a fresh queryset when using a class-level queryset.
         serializer = ExerciseSerializer(exercises, many=True)
         return Response(serializer.data)
 ```
@@ -166,6 +171,15 @@ Let's make sure we follow the same steps as we've done in the course
 
 #### 6.2 Test the API endpoint with Postman
 
+If you don't have the Postman desktop app, download and install and launch it now:
+
+##### Install Postman
+
+1. Go to [postman.com/downloads](https://www.postman.com/downloads/).
+2. Download Postman for your operating system.
+3. Run the installer and follow its instructions.
+4. Launch Postman.
+
 Open postman and make a `GET` request to `http://localhost:8000/api/v1/exercises/`. You should see a JSON response with the list of exercises you added through the admin.
 It should look like this:
 ![get request](images/get_request.gif)
@@ -200,14 +214,19 @@ class ExerciseSerializer(serializers.Serializer):
 #### 7.2 Now, let's add a `post` method to our `ExerciseAPIView` to handle `POST` requests and create new exercises through the API.
 
 ```python
-from rest_framework import APIView
+
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from .serializers import ExerciseSerializer
 from .models import Exercise
 
 class ExerciseAPIView(APIView):
+    permission_classes = [AllowAny]
+    
     # ... get request ...
+
     def post(self, request):
         serializer = ExerciseSerializer(data=request.data)
         if serializer.is_valid():
